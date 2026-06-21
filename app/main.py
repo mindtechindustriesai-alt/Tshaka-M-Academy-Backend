@@ -1,5 +1,5 @@
 """
-TSHAKA M ACADEMY — Ultimate Quantum Backend
+TSHAKA M ACADEMY — Complete Quantum Backend
 South African Patent No. 2026/05142 · CHSH S=2.76
 MindTech Industries — Africa's Quantum Education Platform
 """
@@ -7,9 +7,13 @@ MindTech Industries — Africa's Quantum Education Platform
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
+from datetime import datetime
 
 from app.config import settings
-from app.api.routes import chat, quiz, analytics, upload
+from app.api.routes.chat import router as chat_router
+from app.api.routes.quiz import router as quiz_router
+from app.api.routes.analytics import router as analytics_router
+from app.api.routes.upload import router as upload_router
 from app.services.quantum_service import quantum_service
 
 
@@ -46,20 +50,28 @@ app = FastAPI(
     redoc_url="/api/redoc",
 )
 
-# CORS
+# ============================================================
+# CORS — Allow all frontend domains (including Render)
+# ============================================================
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.CORS_ORIGINS,
+    allow_origins=[
+        "http://localhost:8000",
+        "http://localhost:5500",
+        "https://tshaka-m-academy-frontend.onrender.com",
+        "https://*.onrender.com",
+        "https://*.netlify.app"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 # Include routers
-app.include_router(chat.router, prefix="/api/chat", tags=["Chat"])
-app.include_router(quiz.router, prefix="/api/quiz", tags=["Quiz"])
-app.include_router(analytics.router, prefix="/api/analytics", tags=["Analytics"])
-app.include_router(upload.router, prefix="/api/upload", tags=["Upload"])
+app.include_router(chat_router, prefix="/api/chat", tags=["Chat"])
+app.include_router(quiz_router, prefix="/api/quiz", tags=["Quiz"])
+app.include_router(analytics_router, prefix="/api/analytics", tags=["Analytics"])
+app.include_router(upload_router, prefix="/api/upload", tags=["Upload"])
 
 
 @app.get("/")
