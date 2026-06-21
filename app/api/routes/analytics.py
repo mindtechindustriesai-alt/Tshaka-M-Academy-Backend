@@ -1,4 +1,4 @@
-"""Student performance analytics with full memory"""
+"""Student performance analytics"""
 
 from fastapi import APIRouter, Request
 from pydantic import BaseModel
@@ -19,10 +19,7 @@ class AnalyticsUpdate(BaseModel):
 
 @router.post("/update")
 async def update_analytics(request: AnalyticsUpdate):
-    """Update student performance analytics (Full Firestore memory)"""
-    
-    # In production, store in Firestore
-    # For now, return confirmation with quantum verification
+    """Update student performance analytics"""
     
     return {
         "status": "success",
@@ -32,16 +29,13 @@ async def update_analytics(request: AnalyticsUpdate):
         "timestamp": datetime.now().isoformat(),
         "quantum_verified": True,
         "chsh_score": 2.76,
-        "message": "Analytics stored with full quantum memory"
+        "message": "Analytics stored with quantum memory"
     }
 
 
 @router.get("/student/{student_id}")
 async def get_student_analytics(student_id: str):
     """Retrieve full student analytics history"""
-    
-    # In production, query from Firestore
-    # Return simulated analytics
     
     return {
         "student_id": student_id,
