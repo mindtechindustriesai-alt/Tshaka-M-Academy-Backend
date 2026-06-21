@@ -1,13 +1,14 @@
-"""Chat routes with letter-by-letter streaming, quantum reasoning, and full formatting"""
+"""Chat routes with letter-by-letter streaming and quantum verification"""
 
-from fastapi import APIRouter, HTTPException, Request
+from fastapi import APIRouter, Request
 from fastapi.responses import StreamingResponse
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, AsyncGenerator
 import json
+import asyncio
 
-from app.services.deepseek_service import deepseek_service
-from app.services.quantum_service import quantum_service
+from app.services.deepseek_service import DeepSeekService
+from app.services.quantum_service import QuantumService
 from app.config import settings
 
 router = APIRouter()
@@ -26,17 +27,15 @@ class ChatRequest(BaseModel):
 async def chat_stream(request: ChatRequest):
     """Stream chat response letter-by-letter with quantum verification"""
     
-    # Validate speed
-    speed = max(settings.MIN_TYPING_SPEED, min(settings.MAX_TYPING_SPEED, request.speed))
+    speed = max(10, min(100, request.speed))
+    deepseek = DeepSeekService()
+    quantum = QuantumService()
     
-    # Build response generator
     async def generate():
-        # Send quantum verification header
-        quantum_data = quantum_service.verify()
-        yield f"⚛️ QUANTUM VERIFIED · CHSH S={quantum_data['chsh_score']} · {int(quantum_data['correlation'] * 100)}% correlation\n\n"
+        quantum_data = quantum.verify()
+        yield f"⚛️ Quantum Verified · CHSH S={quantum_data['chsh_score']} · {int(quantum_data['correlation'] * 100)}% correlation\n\n"
         
-        # Stream the actual response
-        async for char in deepseek_service.stream_response(
+        async for char in deepseek.stream_response(
             message=request.message,
             language=request.language,
             grade=request.grade,
@@ -46,7 +45,6 @@ async def chat_stream(request: ChatRequest):
         ):
             yield char
         
-        # Send quantum badge at end
         yield f"\n\n⚛️ Quantum Verified · SA Patent {settings.PATENT_NUMBER}"
     
     return StreamingResponse(generate(), media_type="text/plain")
@@ -54,17 +52,17 @@ async def chat_stream(request: ChatRequest):
 
 @router.post("/")
 async def chat_full(request: ChatRequest):
-    """Full chat response with quantum verification (non-streaming)"""
+    """Full chat response with quantum verification"""
     
-    # Get complete response
+    deepseek = DeepSeekService()
     full_response = ""
-    async for char in deepseek_service.stream_response(
+    async for char in deepseek.stream_response(
         message=request.message,
         language=request.language,
         grade=request.grade,
         subject=request.subject,
         reasoning=request.reasoning,
-        speed=100  # Fast speed for non-streaming
+        speed=100
     ):
         full_response += char
     
