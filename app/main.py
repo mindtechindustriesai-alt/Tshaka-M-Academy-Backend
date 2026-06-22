@@ -16,10 +16,11 @@ from app.api.routes.analytics import router as analytics_router
 from app.api.routes.upload import router as upload_router
 
 # ============================================================
-# NEW ROUTERS FOR UPGRADED FEATURES
+# NEW ROUTERS FOR UPGRADED FEATURES (ALL EXISTING)
 # ============================================================
 from app.api.routes.luvuno import router as luvuno_router
-from app.api.routes.decolonize import router as decolonize_router
+# DECOLONIZE ROUTER REMOVED — "no politics, no decolonization"
+# from app.api.routes.decolonize import router as decolonize_router
 from app.api.routes.adaptive_quiz import router as adaptive_quiz_router
 from app.api.routes.privacy import router as privacy_router
 from app.api.routes.communication import router as communication_router
@@ -45,10 +46,10 @@ async def lifespan(app: FastAPI):
     ║  🔥 LETTER-BY-LETTER TYPING  🔥 QUANTUM REASONING                           ║
     ║  🔥 TABLE GENERATION        🔥 NUMBERING & SPACING                         ║
     ║  🔥 FILE UPLOAD ANALYSIS    🔥 FULL FIRESTORE MEMORY                      ║
-    ║  🔥 LUVUNO INTEGRATION      🔥 DECOLONIZATION ENGINE                      ║
-    ║  🔥 ADAPTIVE QUIZZES        🔥 PERFORMANCE PREDICTOR                     ║
-    ║  🔥 INCOGNITO MODE          🔥 COMMUNICATION HUB                         ║
-    ║  🔥 ROLE-BASED ACCESS       🔥 QUANTUM CHAT                             ║
+    ║  🔥 LUVUNO INTEGRATION      🔥 ADAPTIVE QUIZZES                          ║
+    ║  🔥 PERFORMANCE PREDICTOR   🔥 INCOGNITO MODE                            ║
+    ║  🔥 COMMUNICATION HUB       🔥 ROLE-BASED ACCESS                         ║
+    ║  🔥 QUANTUM CHAT            🔥 GRADE 0 TO UNIVERSITY                     ║
     ║                                                                              ║
     ╚═══════════════════════════════════════════════════════════════════════════════╝
     """)
@@ -58,7 +59,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(
     title="Tshaka M Academy — Quantum Education Platform",
-    description="Quantum-powered home-schooling platform with letter-by-letter AI typing, table generation, full memory, quantum verification, Luvuno integration, and decolonization engine",
+    description="Quantum-powered home-schooling platform with letter-by-letter AI typing, table generation, full memory, quantum verification, Luvuno integration, and adaptive learning",
     version="2.0.0",
     lifespan=lifespan,
     docs_url="/api/docs",
@@ -84,16 +85,17 @@ app.add_middleware(
 )
 
 # ============================================================
-# INCLUDE ROUTERS (Existing + New)
+# INCLUDE ROUTERS (Existing + New — Decolonize REMOVED)
 # ============================================================
 app.include_router(chat_router, prefix="/api/chat", tags=["Chat"])
 app.include_router(quiz_router, prefix="/api/quiz", tags=["Quiz"])
 app.include_router(analytics_router, prefix="/api/analytics", tags=["Analytics"])
 app.include_router(upload_router, prefix="/api/upload", tags=["Upload"])
 
-# New routers
+# New routers (ALL EXISTING FILES)
 app.include_router(luvuno_router, prefix="/api/luvuno", tags=["Luvuno"])
-app.include_router(decolonize_router, prefix="/api/decolonize", tags=["Decolonization"])
+# DECOLONIZE ROUTER REMOVED
+# app.include_router(decolonize_router, prefix="/api/decolonize", tags=["Decolonization"])
 app.include_router(adaptive_quiz_router, prefix="/api/quiz/adaptive", tags=["Adaptive Quiz"])
 app.include_router(privacy_router, prefix="/api/privacy", tags=["Privacy"])
 app.include_router(communication_router, prefix="/api/communication", tags=["Communication"])
@@ -133,7 +135,6 @@ async def root():
             "Weekly extra class scheduling",
             "Grade 0 to university level",
             "Luvuno curriculum integration",
-            "Decolonization content engine",
             "Incognito privacy mode",
             "Communication hub (chat/messaging)",
             "Role-based access control (RBAC)"
@@ -150,7 +151,6 @@ async def root():
             "POST /api/upload/analyze",
             "GET /api/luvuno/status",
             "GET /api/luvuno/curriculum",
-            "POST /api/decolonize/enrich",
             "POST /api/privacy/incognito",
             "POST /api/communication/send",
             "GET /api/communication/history",
